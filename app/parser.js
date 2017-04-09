@@ -1,16 +1,25 @@
 function splitInput(str) {
-  // Convert all line breaks to \n
-  let normalizedBreaks = str.replace(/\r\n?/g, "\n")
-  return normalizedBreaks.split("\n\n");
+  // Convert all line breaks to \n, remove space characters from 
+  let normalizedBreaks = str.replace(/(\r\n?)/g, '\n');
+  let cleanedBlankLines = normalizedBreaks.replace(/(\n[ \t]+\n)/g, '\n\n');
+  return cleanedBlankLines.split('\n\n');
 }
 
 // Checks first character and determins what block type should be applied
 function identifyBlockType(block) {
+    let unorderedList = block.match(/^([\*\+-] )/);
+    let orderedList = block.match(/^(\d+\. )/);
     let startChar = block.charAt(0);
-    if (startChar === "#") {
-      return "h";
+    if (unorderedList) {
+      return 'ul';
     }
-    return "p";
+    if (orderedList) {
+      return 'ol';
+    }
+    if (startChar === '#') {
+      return 'h';
+    }
+    return 'p';
 }
 
 module.exports.parseBlocks = function(inputStr) {
