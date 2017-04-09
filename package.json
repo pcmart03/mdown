@@ -1,0 +1,15 @@
+{
+  "name": "mdown",
+  "version": "1.0.0",
+  "description": "A library for parsing markdown. Written as a learning exercise and not intended for use in production.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
