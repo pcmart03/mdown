@@ -5,11 +5,17 @@ function splitInput(str) {
   return cleanedBlankLines.split('\n\n');
 }
 
-// Checks first character and determins what block type should be applied
 function identifyBlockType(block) {
-    let unorderedList = block.match(/^([\*\+-] )/);
-    let orderedList = block.match(/^(\d+\. )/);
+    // Checks for three or more * or - with or without spaces between
+    let horizRule = block.match(/^((\*\*\*)(\**)?)|((\* \* \*)( \**)?)|((---)(-*)?)|((- - -)( -*)?)/);
+    
+    let unorderedList = block.match(/^( {0,3}[\*\+-] )/);
+    let orderedList = block.match(/^( {0,3}\d+\. )/);
     let startChar = block.charAt(0);
+    
+    if(horizRule) {
+      return 'hr'
+    }
     if (unorderedList) {
       return 'ul';
     }

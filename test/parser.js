@@ -59,9 +59,74 @@ describe('Split input string into blocks and output as objects {type, content}',
       it('Should recognize blocks beginning with /(\d+\. )/ as ordered lists.', function(){
         let input = 'Paragraph 1\n\n1. item 1\n2. item 3';
         let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
-                              {type: 'ol', content: 'Paragraph 1\n\n1. item 1\n2. item 3'}]
+                              {type: 'ol', content: '1. item 1\n2. item 3'}];
+        testBlocks(input, expectedOutput); 
+      });
+      
+      it('Should allow unordered lists to start with up to three spaces', function() {
+        let input = 'Paragraph 1\n\n * list 1 item 1\n * list 1 item 2\n\n  + list 2 item 1\n  + list 2 item 2\n\n   - list 3 item 1';
+        let expectedOutput = [{type: 'p', content: 'Paragraph 1'}, 
+                              {type: 'ul', content: ' * list 1 item 1\n * list 1 item 2'},
+                              {type: 'ul', content: '  + list 2 item 1\n  + list 2 item 2'},
+                              {type: 'ul', content: '   - list 3 item 1'}];
+        testBlocks(input, expectedOutput);
+      });
+
+      it('Should allow ordered lists to start with up to three spaces', function() {
+        let input = 'Paragraph 1\n\n 1. list 1 item 1\n 2. list 1 item 2\n\n  1. list 2 item 1\n  1. list 2 item 2\n\n   1. list 3 item 1';
+        let expectedOutput = [{type: 'p', content: 'Paragraph 1'}, 
+                              {type: 'ol', content: ' 1. list 1 item 1\n 2. list 1 item 2'},
+                              {type: 'ol', content: '  1. list 2 item 1\n  1. list 2 item 2'},
+                              {type: 'ol', content: '   1. list 3 item 1'}];
+        testBlocks(input, expectedOutput);
       });
     });
   });
 
-}); // end Convert 
+  describe("Recognize horizontal rule", function(){
+    it('Should recognize *** as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n***';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '***'}];
+      testBlocks(input, expectedOutput); 
+    });
+
+    it('Should recognize * * * as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n* * *';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '* * *'}];
+      testBlocks(input, expectedOutput); 
+    });
+
+    it('Should recognize --- as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n---';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '---'}];
+      testBlocks(input, expectedOutput); 
+    });
+
+    it('Should recognize - - - as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n- - -';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '- - -'}];
+      testBlocks(input, expectedOutput); 
+    });
+
+    it('Should recognize more than three * or - without spaces as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n****\n\n-----';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '****'},
+                            {type: 'hr', content: '-----'}];
+      testBlocks(input, expectedOutput); 
+    });
+    
+    it('Should recognize more than three * or - with spaces as a horizontal rule', function() {
+      let input = 'Paragraph 1\n\n* * * *\n\n- - - - -';
+      let expectedOutput = [{type: 'p', content: 'Paragraph 1'},
+                            {type: 'hr', content: '* * * *'},
+                            {type: 'hr', content: '- - - - -'}];
+      testBlocks(input, expectedOutput); 
+    });
+  });
+
+}); // end Convert tests 
