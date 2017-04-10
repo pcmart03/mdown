@@ -8,8 +8,9 @@ function splitInput(str) {
 function identifyBlockType(block) {
     // Checks for three or more * or - with or without spaces between
     let horizRule = block.match(/^((\*\*\*)(\**)?)|((\* \* \*)( \**)?)|((---)(-*)?)|((- - -)( -*)?)/);
-    
+    // Checks for blocks begining with up to three spaces and *, +, or -
     let unorderedList = block.match(/^( {0,3}[\*\+-] )/);
+    // checks for blocks begining with up to three spaces, 1 or more digits, a period and a trailing space
     let orderedList = block.match(/^( {0,3}\d+\. )/);
     let startChar = block.charAt(0);
     
@@ -31,10 +32,13 @@ function identifyBlockType(block) {
 module.exports.parseBlocks = function(inputStr) {
   let unprocessedBlocks = splitInput(inputStr);
   let outputArray = [];
+  let contentFlags = {list: false, code: false};
+  let blockType;
   
   unprocessedBlocks.forEach((content) => {
     if (content.length > 0) {
-     outputArray.push({ type: identifyBlockType(content), content });
+     blockType = identifyBlockType(content);
+     outputArray.push({ type: blockType, content });
     }
   });
   return outputArray; 
